@@ -1,0 +1,27 @@
+{
+    "name": "oihub/php-swoole",
+    "description": "Yii2-Swoole",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "sean",
+            "email": "maoxfjob@163.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "yiisoft/yii2": "~2.0.15"
+    },
+    "autoload": {
+        "psr-4": {
+            "oihub\\swoole\\": "src"
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}
