@@ -3,6 +3,7 @@
 namespace oihub\swoole\server;
 
 use Yii;
+use oihub\swoole\traits\RequestTrait;
 
 /**
  * Class SwooleWebSocketServer.
@@ -11,11 +12,12 @@ use Yii;
  */
 class SwooleWebSocketServer
 {
+    use RequestTrait;
+
     /**
      * @var \swoole_websocket_server swoole 对象.
      */
     public $server;
-
     /**
      * @var callback 握手事件.
      */

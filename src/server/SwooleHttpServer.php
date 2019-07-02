@@ -2,6 +2,9 @@
 
 namespace oihub\swoole\server;
 
+use Yii;
+use oihub\swoole\traits\RequestTrait;
+
 /**
  * Class SwooleHttpServer.
  * 
@@ -9,6 +12,8 @@ namespace oihub\swoole\server;
  */
 class SwooleHttpServer
 {
+    use RequestTrait;
+    
     /**
      * @var \swoole_http_server swoole 对象.
      */
@@ -146,30 +151,5 @@ class SwooleHttpServer
             fclose($appResponse->stream);
         }
         $response->end(null);
-    }
-
-    /**
-     * 请求处理.
-     * 
-     * @param \swoole_http_request $request 请求.
-     * @return void
-     */
-    protected function requestHandle(\swoole_http_request $request): void
-    {
-        $_GET = $request->get ?? [];
-        $_POST = $request->post ?? [];
-        $_FILES = $request->files ?? [];
-        $_COOKIE = $request->cookie ?? [];
-
-        $server = $request->server ?? [];
-        $header = $request->header ?? [];
-        foreach ($server as $key => $value) {
-            $_SERVER[strtoupper($key)] = $value;
-            unset($server[$key]);
-        }
-        foreach ($header as $key => $value) {
-            $_SERVER['HTTP_' . strtoupper($key)] = $value;
-        }
-        $_SERVER['SERVER_SOFTWARE'] = 'swoole/' . SWOOLE_VERSION;
     }
 }
