@@ -1,6 +1,6 @@
 <?php
 
-namespace oihub\swoole\websocket;
+namespace oihub\swoole;
 
 use Yii;
 use yii\helpers\FileHelper;
