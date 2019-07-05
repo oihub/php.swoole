@@ -73,7 +73,6 @@ class SwooleWebSocketServer
         \swoole_websocket_server $server,
         \swoole_http_request $request
     ) {
-        $this->parse($request); // 请求处理.
         $response = call_user_func($this->onOpen, $request);
         $this->send($server, $response);
         $response->status === Response::STATUS_SUCCESS or $server->close($request->fd);
