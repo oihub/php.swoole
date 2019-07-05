@@ -1,17 +1,16 @@
 <?php
 
-namespace oihub\swoole\console;
+namespace oihub\swoole\websocket;
 
 use Yii;
 use yii\helpers\FileHelper;
-use oihub\swoole\server\SwooleWebSocketServer;
 
 /**
  * Class WebSocketController.
  * 
  * @author sean <maoxfjob@163.com>
  */
-class WebSocketController extends Controller
+class WebSocketController extends \oihub\swoole\Controller
 {
     /**
      * @var int 运行模式.
@@ -34,6 +33,9 @@ class WebSocketController extends Controller
      */
     public $onClose;
 
+    /**
+     * {@inheritdoc}
+     */
     public function actionStart()
     {
         if ($this->getPid() !== false) {

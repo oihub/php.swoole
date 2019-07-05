@@ -1,8 +1,6 @@
 <?php
 
-namespace oihub\swoole\console;
-
-use Yii;
+namespace oihub\swoole;
 
 /**
  * Class Controller.
@@ -37,7 +35,7 @@ abstract class Controller extends \yii\console\Controller
      */
     public function beforeAction($action)
     {
-        YII_DEBUG and include(dirname(__DIR__) . '/component/Debug.php');
+        YII_DEBUG and include(__DIR__ . '/Debug.php');
         return parent::beforeAction($action);
     }
 

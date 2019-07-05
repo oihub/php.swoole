@@ -1,9 +1,6 @@
 <?php
 
-namespace oihub\swoole\server;
-
-use Yii;
-use oihub\swoole\traits\RequestTrait;
+namespace oihub\swoole\websocket;
 
 /**
  * Class SwooleWebSocketServer.
@@ -12,8 +9,6 @@ use oihub\swoole\traits\RequestTrait;
  */
 class SwooleWebSocketServer
 {
-    use RequestTrait;
-
     /**
      * @var \swoole_websocket_server swoole 对象.
      */
@@ -78,9 +73,10 @@ class SwooleWebSocketServer
         \swoole_websocket_server $server,
         \swoole_http_request $request
     ) {
-        $message = call_user_func($this->onOpen, $request);
-        $server->push($request->fd, $message->toString());
-        // $message->code === 200 or $server->close($request->fd);
+        $this->parse($request); // 请求处理.
+        $response = call_user_func($this->onOpen, $request);
+        $this->send($server, $response);
+        $response->status === Response::STATUS_SUCCESS or $server->close($request->fd);
     }
 
     /**
@@ -95,8 +91,7 @@ class SwooleWebSocketServer
         \swoole_websocket_frame $frame
     ) {
         $server->task($frame);
-        // 输出调试信息.
-        echo $frame->data . PHP_EOL;
+        echo $frame->data . PHP_EOL; // 输出调试信息.
     }
 
     /**
@@ -108,8 +103,7 @@ class SwooleWebSocketServer
      */
     public function onClose(\swoole_server $server, int $fd)
     {
-        $message = call_user_func($this->onClose, $fd);
-        $server->push($fd, $message->toString());
+        call_user_func($this->onClose, $fd);
     }
 
     /**
@@ -127,8 +121,8 @@ class SwooleWebSocketServer
         int $src_worker_id,
         $data
     ) {
-        $message = call_user_func($this->onMessage, $task_id, $src_worker_id, $data);
-        $server->finish($message);
+        $response = call_user_func($this->onMessage, $task_id, $src_worker_id, $data);
+        $server->finish($response);
     }
 
     /**
@@ -141,11 +135,20 @@ class SwooleWebSocketServer
      */
     public function onFinish(\swoole_server $server, int $task_id, $data)
     {
-        $fds = $data->fds;
-        unset($data->fds);
-        $message = $data->toString();
-        foreach ($fds as $fd) {
-            $server->push($fd, $message);
-        }
+        $this->send($server, $data);
+    }
+
+    /**
+     * 发送消息.
+     *
+     * @param \swoole_server  $server swoole 对象.
+     * @param Response $response 响应数据.
+     * @return void
+     */
+    protected function send(\swoole_server $server, Response $response)
+    {
+        array_map(function ($fd) use ($server, $response) {
+            $server->push($fd, $response->message);
+        }, $response->fds);
     }
 }
