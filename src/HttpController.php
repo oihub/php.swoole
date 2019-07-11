@@ -5,7 +5,6 @@ namespace oihub\swoole;
 use Yii;
 use yii\web\Application;
 use yii\helpers\FileHelper;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class HttpController.
@@ -49,10 +48,7 @@ class HttpController extends \oihub\swoole\Controller
 
         require($this->rootDir . '/vendor/autoload.php');
         require($this->rootDir . '/config/bootstrap.php');
-        $config = ArrayHelper::merge(
-            require($this->rootDir . '/config/main.php'),
-            require($this->rootDir . '/config/main-local.php')
-        );
+        $config = require($this->rootDir . '/config/main.php');
 
         $this->config = array_merge([
             'document_root' => $this->rootDir . DIRECTORY_SEPARATOR . $this->web,

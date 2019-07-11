@@ -9,7 +9,7 @@ use Yii;
  * 
  * @author sean <maoxfjob@163.com>
  */
-class SwooleHttpServer extends \oihub\swoole\SwooleServer
+class SwooleHttpServer
 {
     /**
      * @var \swoole_http_server swoole 对象.
