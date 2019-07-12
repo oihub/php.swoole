@@ -69,12 +69,10 @@ class SwooleWebSocketServer
      * @param \swoole_http_request $request 请求.
      * @return void
      */
-    public function onOpen(
-        \swoole_websocket_server $server,
-        \swoole_http_request $request
-    ) {
+    public function onOpen($server, $request)
+    {
         $response = call_user_func($this->onOpen, $request);
-        $this->send($server, $response);
+        $this->sendMessage($server, $response);
         $response->status === Response::STATUS_SUCCESS or $server->close($request->fd);
     }
 
@@ -85,11 +83,10 @@ class SwooleWebSocketServer
      * @param \swoole_websocket_frame $frame 数据帧.
      * @return void
      */
-    public function onMessage(
-        \swoole_websocket_server $server,
-        \swoole_websocket_frame $frame
-    ) {
-        $server->task($frame);
+    public function onMessage($server, $frame)
+    {
+        $data = call_user_func($this->onMessage, $frame);
+        $this->sendMessage($server, $data);
         echo $frame->data . PHP_EOL; // 输出调试信息.
     }
 
@@ -100,7 +97,7 @@ class SwooleWebSocketServer
      * @param int $fd 客户端的文件描述符.
      * @return void
      */
-    public function onClose(\swoole_server $server, int $fd)
+    public function onClose($server, $fd)
     {
         call_user_func($this->onClose, $fd);
     }
@@ -114,15 +111,8 @@ class SwooleWebSocketServer
      * @param mixed $data 任务内容.
      * @return void
      */
-    public function onTask(
-        \swoole_server $server,
-        int $task_id,
-        int $src_worker_id,
-        $data
-    ) {
-        $response = call_user_func($this->onMessage, $task_id, $src_worker_id, $data);
-        $server->finish($response);
-    }
+    public function onTask($server, $task_id, $src_worker_id, $data)
+    { }
 
     /**
      * 异步任务结果.
@@ -132,19 +122,17 @@ class SwooleWebSocketServer
      * @param mixed $data 结果内容.
      * @return void
      */
-    public function onFinish(\swoole_server $server, int $task_id, $data)
-    {
-        $this->send($server, $data);
-    }
+    public function onFinish($server, int $task_id, $data)
+    { }
 
     /**
      * 发送消息.
      *
-     * @param \swoole_server  $server swoole 对象.
+     * @param \swoole_websocket_server  $server swoole 对象.
      * @param Response $response 响应数据.
      * @return void
      */
-    protected function send(\swoole_server $server, Response $response)
+    protected function sendMessage($server, $response)
     {
         array_map(function ($fd) use ($server, $response) {
             $server->push($fd, $response->message);
