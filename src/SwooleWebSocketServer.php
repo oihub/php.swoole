@@ -46,17 +46,21 @@ class SwooleWebSocketServer
         $this->server = new \swoole_websocket_server($host, $port, $mode, $socketType);
         $this->server->set($config);
         $this->server->on('open', function ($server, $request) {
+            echo 'open：' . $request->fd . PHP_EOL; // 输出调试信息.
             call_user_func($this->onOpen, $server, $request);
         });
         $this->server->on('message', function ($server, $frame) {
-            echo $frame->data . PHP_EOL; // 输出调试信息.
+            echo 'message：' . $frame->data . PHP_EOL; // 输出调试信息.
             call_user_func($this->onMessage, $server, $frame);
         });
         $this->server->on('close', function ($server, $fd) {
+            echo 'close：' . $fd . PHP_EOL; // 输出调试信息.
             call_user_func($this->onClose, $server, $fd);
         });
-        $this->server->on('task', function ($server, $task_id, $src_worker_id, $data) { });
-        $this->server->on('finish', function ($server, $task_id, $data) { });
+        $this->server->on('task', function ($server, $task_id, $src_worker_id, $data) {
+        });
+        $this->server->on('finish', function ($server, $task_id, $data) {
+        });
     }
 
     /**
