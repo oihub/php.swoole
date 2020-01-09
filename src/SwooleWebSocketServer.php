@@ -49,8 +49,8 @@ class SwooleWebSocketServer
             call_user_func($this->onOpen, $server, $request);
         });
         $this->server->on('message', function ($server, $frame) {
-            call_user_func($this->onMessage, $server, $frame);
             echo $frame->data . PHP_EOL; // 输出调试信息.
+            call_user_func($this->onMessage, $server, $frame);
         });
         $this->server->on('close', function ($server, $fd) {
             call_user_func($this->onClose, $server, $fd);
