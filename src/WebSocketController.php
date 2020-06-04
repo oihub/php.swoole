@@ -19,7 +19,7 @@ class WebSocketController extends \oihub\swoole\Controller
     /**
      * @var int Socket 类型.
      */
-    public $socketType = SWOOLE_SOCK_TCP;
+    public $socketType = SWOOLE_SOCK_TCP | SWOOLE_SSL;;
     /**
      * @var callback 握手事件.
      */
