@@ -43,24 +43,40 @@ class SwooleWebSocketServer
         int $socketType,
         array $config = []
     ) {
+        $log = '';
+        $log .= '[监听地址: ' . $host . '] ';
+        $log .= '[监听端口: ' . $port . '] ';
+        $log .= '[运行模式: ' . $mode . '] ';
+        $log .= '[运行类型: ' . $socketType . '] ';
+        $this->echo('', '服务开启', $log);
+
         $this->server = new \swoole_websocket_server($host, $port, $mode, $socketType);
         $this->server->set($config);
         $this->server->on('open', function ($server, $request) {
-            echo 'open：' . $request->fd . PHP_EOL; // 输出调试信息.
+            $this->echo($request->fd, '连接');
             call_user_func($this->onOpen, $server, $request);
         });
         $this->server->on('message', function ($server, $frame) {
-            echo 'message：' . $frame->data . PHP_EOL; // 输出调试信息.
+            if ($frame->data != 'ping') {
+                $this->echo($frame->fd, '接收消息', $frame->data);
+            }
             call_user_func($this->onMessage, $server, $frame);
         });
         $this->server->on('close', function ($server, $fd) {
-            echo 'close：' . $fd . PHP_EOL; // 输出调试信息.
+            $this->echo($fd, '关闭');
             call_user_func($this->onClose, $server, $fd);
         });
-        $this->server->on('task', function ($server, $task_id, $src_worker_id, $data) {
-        });
-        $this->server->on('finish', function ($server, $task_id, $data) {
-        });
+        $this->server->on('task', function ($server, $task_id, $src_worker_id, $data) { });
+        $this->server->on('finish', function ($server, $task_id, $data) { });
+    }
+
+    public function echo($fd, $type, $message = '')
+    {
+        $data[] = date('H:i:s');
+        $data[] = $fd;
+        $data[] = $type;
+        $data[] = $message;
+        echo join(' ', $data) . PHP_EOL;
     }
 
     /**
