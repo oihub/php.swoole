@@ -53,7 +53,7 @@ class SwooleWebSocketServer
         $this->server = new \swoole_websocket_server($host, $port, $mode, $socketType);
         $this->server->set($config);
         $this->server->on('open', function ($server, $request) {
-            $this->echo($request->fd, '连接');
+            $this->echo($request->fd, '连接', json_encode($request->server));
             call_user_func($this->onOpen, $server, $request);
         });
         $this->server->on('message', function ($server, $frame) {
