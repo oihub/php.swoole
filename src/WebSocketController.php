@@ -29,6 +29,10 @@ class WebSocketController extends \oihub\swoole\Controller
      */
     public $onMessage;
     /**
+     * @var callback 开始事件.
+     */
+    public $onStart;
+    /**
      * @var callback 关闭事件.
      */
     public $onClose;
@@ -70,6 +74,7 @@ class WebSocketController extends \oihub\swoole\Controller
 
         $server->onOpen = $this->onOpen;
         $server->onMessage = $this->onMessage;
+        $server->onStart = $this->onStart;
         $server->onClose = $this->onClose;
 
         $message = "server is running, listening {$this->host}:{$this->port}";
