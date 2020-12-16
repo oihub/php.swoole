@@ -67,13 +67,16 @@ class SwooleWebSocketServer
             call_user_func($this->onMessage, $server, $frame);
         });
         $this->server->on('WorkerStart', function ($server, $worker_id) {
-            call_user_func($this->onStart, $server, $worker_id);
+            if (!$server->taskworker) {
+                $server->task([]);
+            }
         });
         $this->server->on('close', function ($server, $fd) {
             $this->echo($fd, '关闭');
             call_user_func($this->onClose, $server, $fd);
         });
         $this->server->on('task', function ($server, $task_id, $src_worker_id, $data) {
+            call_user_func($this->onStart, $server);
         });
         $this->server->on('finish', function ($server, $task_id, $data) {
         });
