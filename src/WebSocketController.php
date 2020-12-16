@@ -15,7 +15,7 @@ class WebSocketController extends \oihub\swoole\Controller
     /**
      * @var int 运行模式.
      */
-    public $mode = SWOOLE_BASE;
+    public $mode = SWOOLE_PROCESS;
     /**
      * @var int Socket 类型.
      */
