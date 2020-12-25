@@ -55,7 +55,7 @@ class WebSocketController extends \oihub\swoole\Controller
 
         $this->config = array_merge([
             'daemonize' => false, // 守护进程执行.
-            'task_worker_num' => 4, // task 进程的数量.
+            'task_worker_num' => 1, // task 进程的数量.
             'ssl_cert_file' => '',
             'ssl_key_file' => '',
             'pid_file' => '',
